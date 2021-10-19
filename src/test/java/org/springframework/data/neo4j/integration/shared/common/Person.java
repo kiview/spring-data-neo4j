@@ -15,6 +15,8 @@
  */
 package org.springframework.data.neo4j.integration.shared.common;
 
+import java.util.List;
+
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
