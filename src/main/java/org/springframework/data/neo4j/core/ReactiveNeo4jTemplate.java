@@ -230,7 +230,7 @@ public final class ReactiveNeo4jTemplate implements
 	@SuppressWarnings("unchecked")
 	<T, R> Flux<R> doFind(@Nullable String cypherQuery, @Nullable Map<String, Object> parameters, Class<T> domainType, Class<R> resultType, TemplateSupport.FetchType fetchType, @Nullable QueryFragmentsAndParameters queryFragmentsAndParameters) {
 
-		Flux<T> intermediaResults = null;
+		Flux<T> intermediaResults;
 		if (cypherQuery == null && queryFragmentsAndParameters == null && fetchType == TemplateSupport.FetchType.ALL) {
 			intermediaResults = doFindAll(domainType, resultType);
 		} else {
@@ -242,14 +242,10 @@ public final class ReactiveNeo4jTemplate implements
 				executableQuery = createExecutableQuery(domainType, resultType, queryFragmentsAndParameters);
 			}
 
-			switch (fetchType) {
-				case ALL:
-					intermediaResults = executableQuery.flatMapMany(ExecutableQuery::getResults);
-					break;
-				case ONE:
-					intermediaResults = executableQuery.flatMap(ExecutableQuery::getSingleResult).flux();
-					break;
-			}
+			intermediaResults = switch (fetchType) {
+				case ALL -> executableQuery.flatMapMany(ExecutableQuery::getResults);
+				case ONE -> executableQuery.flatMap(ExecutableQuery::getSingleResult).flux();
+			};
 		}
 
 		if (resultType.isAssignableFrom(domainType)) {
