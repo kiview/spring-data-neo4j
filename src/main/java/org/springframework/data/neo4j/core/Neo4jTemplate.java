@@ -333,7 +333,7 @@ public final class Neo4jTemplate implements
 			return null;
 		}
 
-		if (resultType.isInstance(instance)) {
+		if (resultType.equals(instance.getClass())) {
 			return resultType.cast(save(instance));
 		}
 
